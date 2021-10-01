@@ -11,10 +11,6 @@ const router = express.Router();
 
 const { isLoggedIn } = require('../../middleware');
 
-// router.get('/', isLoggedIn, (req, res) => {
-//   console.log(req.user)
-//   res.send(`SELECT * FROM bills`)
-// });
 
 router.get('/groups', isLoggedIn ,async (req, res) => {
   try {
