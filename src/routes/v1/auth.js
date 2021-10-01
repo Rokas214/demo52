@@ -1,18 +1,37 @@
-/* eslint-disable newline-per-chained-call */
 const express = require('express');
 const mysql = require('mysql2/promise');
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const {isLoggedIn} = require("../../middleware")
+
 const { dbConfig, jwtSecret } = require('../../config');
 
 const router = express.Router();
 
 const userSchema = Joi.object({
+  // fullName: Joi.string().required(),
   email: Joi.string().email().trim().lowercase().required(),
   password: Joi.string().required(),
 });
+
+
+
+
+
+router.get('/my-groups', async (req, res) => {
+  try {
+  const con = await mysql.createConnection(dbConfig);
+  const [data] = await con.execute('SELECT * FROM cao_group');
+  await con.end();
+  
+  return res.send(data);
+  } catch (err) {
+  return res.status(500).send({ err });
+  }
+  });
+
 
 router.post('/register', async (req, res) => {
   let userDetails = req.body;
@@ -39,7 +58,9 @@ router.post('/register', async (req, res) => {
   }
 });
 
-router.post('/login', async (req, res) => {
+
+
+router.post('/login',async (req, res) => {
   let userDetails = req.body;
   try {
     userDetails = await userSchema.validateAsync(userDetails);
@@ -51,7 +72,7 @@ router.post('/login', async (req, res) => {
   try {
     const con = await mysql.createConnection(dbConfig);
     const [data] = await con.execute(`
-          SELECT * FROM users 
+          SELECT * FROM users
           WHERE email =  (${mysql.escape(userDetails.email)})
           LIMIT 1
       `);
@@ -68,11 +89,11 @@ router.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: data[0].id, email: data[0].email, geriausiasDestytojas: 'Petras' },
+      { id: data[0].id, email: data[0].email},
       jwtSecret,
     );
 
-    return res.send({ token });
+    return res.send({ msg: "Successfuly logged in", token });
   } catch (err) {
     console.log(err);
     return res.status(500).send({ err: 'Issue. Try again' });

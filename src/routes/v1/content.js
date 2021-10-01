@@ -5,7 +5,8 @@ const router = express.Router();
 const { isLoggedIn } = require('../../middleware');
 
 router.get('/', isLoggedIn, (req, res) => {
-  res.send({ msg: `Tu esi ${req.user.id} vartotojas` });
+  console.log(req.user)
+  res.send(`SELECT * FROM users1`)
 });
 
 module.exports = router;
