@@ -11,12 +11,7 @@ const router = express.Router();
 
 const { isLoggedIn } = require('../../middleware');
 
-// router.get('/', isLoggedIn, (req, res) => {
-//   console.log(req.user)
-//   res.send(`SELECT * FROM bills`)
-// });
-
-router.get('/group-bills', isLoggedIn ,async (req, res) => {
+router.get('/groupbills', isLoggedIn ,async (req, res) => {
     
     try {
       
@@ -31,7 +26,7 @@ router.get('/group-bills', isLoggedIn ,async (req, res) => {
     });
   
   
-  router.post('/group-bills', isLoggedIn ,async (req, res) => {
+  router.post('/groupbills', isLoggedIn ,async (req, res) => {
 
       if (
       !req.body.description || !req.body.amount
